@@ -1,16 +1,13 @@
 ﻿using OWML.Common;
 using OWML.Events;
-using System;
-using UnityEngine;
 using System.Reflection;
-using Harmony;
-using System.Collections;
+using UnityEngine;
 
 namespace TAICheats
 {
 	public static class MyExtensions
 	{
-		public static void TAISetTranslationalThrust(this JetpackThrusterModel jet, float newacc)
+		public static void TAIcheat_SetTranslationalThrust(this JetpackThrusterModel jet, float newacc)
 		{
 			float oldtrst = jet.GetMaxTranslationalThrust();
 			float oldbst = jet.GetBoostMaxThrust();
@@ -24,14 +21,14 @@ namespace TAICheats
 		}
 	}
 	public class DebugInput : ModBehaviour
-    {
+	{
 		private RelativeLocationData relconstr(Vector3 body_position, Quaternion body_rotation, Vector3 body_velocity, OWRigidbody relativeBody, Transform relativeTransform = null)
 		{
 			if (relativeTransform == null)
 			{
 				relativeTransform = relativeBody.transform;
 			}
-			RelativeLocationData res = new RelativeLocationData(Locator.GetPlayerBody(),relativeBody);
+			RelativeLocationData res = new RelativeLocationData(Locator.GetPlayerBody(), relativeBody);
 			res.localPosition = relativeTransform.InverseTransformPoint(body_position);
 			res.localRotation = Quaternion.Inverse(relativeTransform.rotation) * body_rotation;
 			res.localRelativeVelocity = relativeTransform.InverseTransformDirection(body_velocity - relativeBody.GetPointVelocity(body_position));
@@ -193,30 +190,11 @@ namespace TAICheats
 
 		private void Update()
 		{
-			if (global::Input.GetKeyDown(KeyCode.LeftShift) || global::Input.GetKeyDown(KeyCode.RightShift))
-			{
-				this.shiftPressed = true;
-			}
-			if (global::Input.GetKeyUp(KeyCode.LeftShift) || global::Input.GetKeyUp(KeyCode.RightShift))
-			{
-				this.shiftPressed = false;
-			}
-			if (global::Input.GetKeyDown(KeyCode.LeftControl) || global::Input.GetKeyDown(KeyCode.RightControl))
-			{
-				this.ctrlPressed = true;
-			}
-			if (global::Input.GetKeyUp(KeyCode.LeftControl) || global::Input.GetKeyUp(KeyCode.RightControl))
-			{
-				this.ctrlPressed = false;
-			}
-			if (global::Input.GetKeyDown(KeyCode.LeftAlt) || global::Input.GetKeyDown(KeyCode.RightAlt))
-			{
-				this.altPressed = true;
-			}
-			if (global::Input.GetKeyUp(KeyCode.LeftAlt) || global::Input.GetKeyUp(KeyCode.RightAlt))
-			{
-				this.altPressed = false;
-			}
+			this.shiftPressed = global::Input.GetKey(KeyCode.LeftShift) || global::Input.GetKey(KeyCode.RightShift);
+			this.ctrlPressed = global::Input.GetKey(KeyCode.LeftControl) || global::Input.GetKey(KeyCode.RightControl);
+			this.altPressed = global::Input.GetKey(KeyCode.LeftAlt) || global::Input.GetKey(KeyCode.RightAlt);
+			if (!Locator.GetPlayerController())
+				return;
 			if (!Locator.GetPlayerController().enabled)
 				return;
 			if (global::Input.GetKeyDown(KeyCode.BackQuote))
@@ -224,11 +202,12 @@ namespace TAICheats
 				DebugInput.cheatsOn = !DebugInput.cheatsOn;
 				if (DebugInput.cheatsOn)
 				{
-					this.CMOn = true;
+
+					AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOn)[0], Locator.GetActiveCamera().transform.position);
 				}
 				else
 				{
-					this.CMOff = true;
+					AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOff)[0], Locator.GetActiveCamera().transform.position);
 				}
 			}
 			if (DebugInput.cheatsOn)
@@ -467,7 +446,7 @@ namespace TAICheats
 						AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.ToolProbeLaunch)[0], Locator.GetPlayerBody().transform.position);
 					}
 				}
-				if (global::Input.GetKeyDown(DebugKeyCode.powerOverwhelming) || global::Input.GetKeyDown(KeyCode.P))
+				if (global::Input.GetKeyDown(KeyCode.P))
 				{
 					if (this.altPressed)
 					{
@@ -476,11 +455,11 @@ namespace TAICheats
 							if (!this.wasBoosted)
 							{
 								this.jetpackStanard = Locator.GetPlayerSuit().GetComponent<JetpackThrusterModel>().GetMaxTranslationalThrust();
-								Locator.GetPlayerSuit().GetComponent<JetpackThrusterModel>().TAISetTranslationalThrust(50f);
+								Locator.GetPlayerSuit().GetComponent<JetpackThrusterModel>().TAIcheat_SetTranslationalThrust(50f);
 							}
 							else
 							{
-								Locator.GetPlayerSuit().GetComponent<JetpackThrusterModel>().TAISetTranslationalThrust(this.jetpackStanard);
+								Locator.GetPlayerSuit().GetComponent<JetpackThrusterModel>().TAIcheat_SetTranslationalThrust(this.jetpackStanard);
 							}
 							this.wasBoosted = !this.wasBoosted;
 							if (this.wasBoosted)
@@ -666,16 +645,6 @@ namespace TAICheats
 						}
 					}
 				}
-			}
-			if (this.CMOn)
-			{
-				AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOn)[0], Locator.GetPlayerBody().transform.position);
-				this.CMOn = false;
-			}
-			if (this.CMOff)
-			{
-				AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOff)[0], Locator.GetPlayerBody().transform.position);
-				this.CMOff = false;
 			}
 			if (this.COn)
 			{

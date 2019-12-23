@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,23 +39,26 @@
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\0Harmony.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="OWML.Common">
       <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\OWML.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OWML.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\OWML.Events.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Outer Wilds\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +72,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(SolutionDir)releases\$(ProjectName)\"
+xcopy /Y "$(TargetDir)manifest.json" "$(SolutionDir)releases\$(ProjectName)\"
+7z a -tzip -mx5 -r0 $(SolutionDir)releases\$(ProjectName).zip $(SolutionDir)releases\$(ProjectName)\*.*</PostBuildEvent>
   </PropertyGroup>
 </Project>
