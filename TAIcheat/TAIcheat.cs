@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
-using OWML.Events;
+using OWML.ModHelper;
+using OWML.ModHelper.Events;
 using System.Reflection;
 using UnityEngine;
 
@@ -193,23 +194,18 @@ namespace TAICheats
 			this.shiftPressed = global::Input.GetKey(KeyCode.LeftShift) || global::Input.GetKey(KeyCode.RightShift);
 			this.ctrlPressed = global::Input.GetKey(KeyCode.LeftControl) || global::Input.GetKey(KeyCode.RightControl);
 			this.altPressed = global::Input.GetKey(KeyCode.LeftAlt) || global::Input.GetKey(KeyCode.RightAlt);
-			if (!Locator.GetPlayerController())
-				return;
-			if (!Locator.GetPlayerController().enabled)
-				return;
 			if (global::Input.GetKeyDown(KeyCode.BackQuote))
 			{
 				DebugInput.cheatsOn = !DebugInput.cheatsOn;
 				if (DebugInput.cheatsOn)
-				{
-
 					AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOn)[0], Locator.GetActiveCamera().transform.position);
-				}
 				else
-				{
 					AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOff)[0], Locator.GetActiveCamera().transform.position);
-				}
 			}
+			if (!Locator.GetPlayerController())
+				return;
+			if (!Locator.GetPlayerController().enabled)
+				return;
 			if (DebugInput.cheatsOn)
 			{
 				if (global::Input.GetKeyDown(DebugKeyCode.setWarpPoint))
@@ -282,6 +278,7 @@ namespace TAICheats
 							DebugInput._hasSetWarpPoint[DebugInput.relIndex] = true;
 							DebugInput._relativeBody[DebugInput.relIndex] = DebugInput.hit.rigidbody.GetAttachedOWRigidbody(false);
 							DebugInput._relativeData[DebugInput.relIndex] = relconstr(DebugInput.hit.point, Quaternion.FromToRotation(Locator.GetPlayerBody().transform.up, DebugInput.hit.normal) * Locator.GetPlayerBody().transform.rotation, DebugInput._relativeBody[DebugInput.relIndex].GetPointVelocity(DebugInput.hit.point), DebugInput._relativeBody[DebugInput.relIndex], null);
+							this.COn = true;
 						}
 					}
 				}
@@ -321,6 +318,7 @@ namespace TAICheats
 						GlobalMessenger.FireEvent("TriggerSupernova");
 					}
 				}
+				/*
 				if (global::Input.GetKeyDown(DebugKeyCode.destroyTimeline))
 				{
 					Debug.Log("Try DestroyTimeline (Requires NomaiExperimentBlackHole)");
@@ -334,6 +332,8 @@ namespace TAICheats
 				{
 					Locator.GetPlayerTransform().GetComponent<PlayerResources>().SetDebugKillResources(false);
 				}
+				
+				*/
 				if (global::Input.GetKeyDown(DebugKeyCode.timeLapse))
 				{
 					Time.timeScale = 10f;
@@ -367,7 +367,7 @@ namespace TAICheats
 						DebugInput.hiddenHUD = !DebugInput.hiddenHUD;
 						if (DebugInput.hiddenHUD)
 						{
-							oldmode = (int)typeof(GUIMode).GetAnyField("_renderMode").GetValue(7);
+							oldmode = (int)typeof(GUIMode).GetAnyField("_renderMode").GetValue(null);
 							typeof(GUIMode).GetAnyField("_renderMode").SetValue(null, 7);
 							this.COn = true;
 						}
@@ -392,7 +392,7 @@ namespace TAICheats
 						}
 					}
 				}
-				if (global::Input.GetKeyDown(KeyCode.J) || (InputLibrary.rollMode.IsPressed() && InputLibrary.toolOptionDown.IsNewlyPressed(false)))
+				if (global::Input.GetKeyDown(KeyCode.J))
 				{
 					if (this.altPressed && Locator.GetShipTransform())
 					{

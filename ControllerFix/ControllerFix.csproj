@@ -37,23 +37,34 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\0Harmony.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="OWML.Common">
-      <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\OWML.Common.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\NAudio-Unity.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\OWML.Events.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Json.Net.Unity3D.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.ModHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.ModHelper.Events.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="UnityEngine.CoreModule">
@@ -69,6 +80,7 @@
     <None Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
