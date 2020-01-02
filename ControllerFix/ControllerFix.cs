@@ -5,7 +5,7 @@ using PadEZ;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace XBoxCOntrollerFix
+namespace XBoxControllerFix
 {
 
 	class GamePad_PC_XB1_Fix

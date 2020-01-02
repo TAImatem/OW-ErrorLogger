@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TruAI.SmoothThrust")]
+[assembly: AssemblyTitle("TruAI.MenuTry")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TruAI.SmoothThrust")]
+[assembly: AssemblyProduct("TruAI.MenuTry")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("82c45075-4858-4925-b63e-7d86bc186f4d")]
+[assembly: Guid("6155732e-89b0-4d1e-a76b-229c056ae1e9")]
 
 // Version information for an assembly consists of the following four values:
 //

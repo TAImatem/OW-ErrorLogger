@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothThrust", "SmoothThrus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAIcheat", "TAIcheat\TAIcheat.csproj", "{D0053C41-6F3B-4C90-B5E3-CCFCC8808A3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuTries", "MenuTries\MenuTries.csproj", "{C745ACFB-0081-4CF6-BB4E-C2B1DE59DF19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D0053C41-6F3B-4C90-B5E3-CCFCC8808A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0053C41-6F3B-4C90-B5E3-CCFCC8808A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0053C41-6F3B-4C90-B5E3-CCFCC8808A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C745ACFB-0081-4CF6-BB4E-C2B1DE59DF19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C745ACFB-0081-4CF6-BB4E-C2B1DE59DF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C745ACFB-0081-4CF6-BB4E-C2B1DE59DF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C745ACFB-0081-4CF6-BB4E-C2B1DE59DF19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

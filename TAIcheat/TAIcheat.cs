@@ -3,6 +3,9 @@ using OWML.ModHelper;
 using OWML.ModHelper.Events;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 namespace TAICheats
 {
@@ -36,29 +39,30 @@ namespace TAICheats
 			return res;
 		}
 
+		public static IModConsole console;
+		public static GameObject player;
+		public static PlayerCharacterController playerchar;
+
 		private void Start()
 		{
+			console = ModHelper.Console;
 			ModHelper.Console.WriteLine("TAICheat ready!");
-		}
 
+		}
+		
 		private void LateUpdate()
 		{
-			this._gForce = this._playerController.GetNormalAccelerationScalar();
+			if (_playerController!=null)
+				this._gForce = this._playerController.GetNormalAccelerationScalar();
 		}
 
 		private void OnGUI()
 		{
-			if (!_playerController || !_playerForceDetector)
+			if (_playerController == null || _playerForceDetector == null)
 			{
-				GameObject obj = base.gameObject.FindWithRequiredTag("Player");
-				if (obj)
-				{
-					this._playerForceDetector = obj.GetRequiredComponentInChildren<ForceDetector>();
-					this._playerController = obj.GetRequiredComponent<PlayerCharacterController>();
-				}
-				else
-					return;
-
+				this._playerForceDetector = Locator.GetPlayerForceDetector();
+				this._playerController = Locator.GetPlayerController();
+				if (_playerController == null || _playerForceDetector == null) return;
 			}
 			float num = 400f;
 			if (GUIMode.IsHiddenMode() || PlayerState.UsingShipComputer())
@@ -202,10 +206,14 @@ namespace TAICheats
 				else
 					AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOff)[0], Locator.GetActiveCamera().transform.position);
 			}
-			if (!Locator.GetPlayerController())
+
+			if (Locator.GetPlayerController() == null)
 				return;
-			if (!Locator.GetPlayerController().enabled)
+			else
+				playerchar = Locator.GetPlayerController();
+			if (!playerchar.enabled)
 				return;
+
 			if (DebugInput.cheatsOn)
 			{
 				if (global::Input.GetKeyDown(DebugKeyCode.setWarpPoint))

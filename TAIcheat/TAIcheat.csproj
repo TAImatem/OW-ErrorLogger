@@ -41,7 +41,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\NAudio-Unity.dll</HintPath>
+      <HintPath>..\packages\OWML.2019.12.30.13\lib\net35\NAudio-Unity.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -49,22 +49,22 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.dll</HintPath>
+      <HintPath>..\packages\OWML.2019.12.30.13\lib\net35\OWML.dll</HintPath>
     </Reference>
     <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.Common.dll</HintPath>
+      <HintPath>..\packages\OWML.2019.12.30.13\lib\net35\OWML.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.ModHelper.dll</HintPath>
+      <HintPath>..\packages\OWML.2019.12.30.13\lib\net35\OWML.ModHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+      <HintPath>..\packages\OWML.2019.12.30.13\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.2019.12.28.8\lib\net35\OWML.ModHelper.Events.dll</HintPath>
+      <HintPath>..\packages\OWML.2019.12.30.13\lib\net35\OWML.ModHelper.Events.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System">
@@ -81,6 +81,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
       <Private>False</Private>
