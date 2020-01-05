@@ -22,7 +22,7 @@ namespace XBoxControllerFix
 			}
 			XboxControllerFix.occInds.Add(___m_xb1Index);
 			if (chck != ___m_xb1Index)
-				XboxControllerFix.print($"patch fixed index from {chck} to {___m_xb1Index}");
+				ModConsole.Instance.WriteLine($"patch fixed index from {chck} to {___m_xb1Index}");
 		}
 
 		public static void Destr_Prefix(GamePad_PC_XB1 __instance, ref uint ___m_xb1Index)
@@ -50,13 +50,13 @@ namespace XBoxControllerFix
 			}
 			if (result != null)
 			{
-				XboxControllerFix.print($"patched controller type: #{padIndex} \"{name}\"; resulting type = {result.GetPadType()}");
+				ModConsole.Instance.WriteLine($"patched controller type: #{padIndex} \"{name}\"; resulting type = {result.GetPadType()}");
 				__result = result;
 				return false;
 			}
 			else
 			{
-				XboxControllerFix.print($"normal controller type: #{padIndex} \"{name}\"");
+				ModConsole.Instance.WriteLine($"normal controller type: #{padIndex} \"{name}\"");
 				return true;
 			}
 		}

@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace MenuTries
 {
-	class MenuPatch
+	/*class MenuPatch
 	{
 		public static void Menu_Prefix(TitleScreenManager __instance)
 		{
@@ -37,19 +37,29 @@ namespace MenuTries
 				}
 			}
 		}
-	}
+	}*/
 	public class MenuTries : ModBehaviour
 	{
 		public static IModConsole console;
-		public static GameObject extrabut, mainmenu, setbut;
+		public static GameObject extramenu, mainmenu, setbut;
+		public static Button menubutton;
+		public static Menu cusMenu;
 
 		private void Start()
 		{
 			console = ModHelper.Console;
-			ModHelper.HarmonyHelper.AddPrefix<TitleScreenManager>("SetUpMenu", typeof(MenuPatch), "Menu_Prefix");
+			//ModHelper.HarmonyHelper.AddPrefix<TitleScreenManager>("SetUpMenu", typeof(MenuPatch), "Menu_Prefix");
+			menubutton = ModHelper.Menus.MainMenu.AddButton("sample menu", 4);
+			menubutton.onClick.AddListener(OnEvent);
+			mainmenu = GameObject.Find("KeyboardRebindingCanvas");
+			mainmenu = mainmenu.transform.GetChild(0).gameObject;
+			extramenu = GameObject.Instantiate(mainmenu);
+			GameObject.Destroy(extramenu.transform.Find("HeaderPanel").GetComponentInChildren<LocalizedText>());
+			extramenu.transform.Find("HeaderPanel").GetComponentInChildren<Text>().text = "custom menu";
+			cusMenu = extramenu.GetComponent<Menu>();// this doesn't open :(
+			//cusMenu = mainmenu.GetComponent<Menu>(); // this opens
 			ModHelper.Console.WriteLine("MenuTry ready!");
-			ModHelper.Events.AddEvent<Menu>(Events.AfterAwake);
-			ModHelper.Events.OnEvent += OnEvent;
+			
 			//mainmenu = GameObject.Find("MainMenuLayoutGroup");
 			/*GameObject setbut = GameObject.Find("Button-Options");
 			extrabut = Object.Instantiate(setbut);
@@ -59,12 +69,16 @@ namespace MenuTries
 			ModHelper.Console.WriteLine("New button added!");*/
 
 		}
-		private void OnEvent(MonoBehaviour behaviour, Events ev)
+		private void OnEvent()
 		{
+			ModHelper.Console.WriteLine("trying to open menu");
+			cusMenu.EnableMenu(true);
+			ModHelper.Console.WriteLine("trying to open menu (end)");
+			/*
 			GameObject cobj = behaviour.gameObject;
 			if (cobj.name == "PauseMenuItems")
 				cobj = cobj.transform.GetChild(0).gameObject;
-			if (cobj.name == "MainMenuLayoutGroup"|| cobj.name == "PauseMenuItemsLayout")
+			if (cobj.name == "MainMenuLayoutGroup" || cobj.name == "PauseMenuItemsLayout")
 			{
 				mainmenu = cobj;
 				GameObject setbut = mainmenu.transform.Find("Button-Options").gameObject;
@@ -101,18 +115,11 @@ namespace MenuTries
 			{
 				ModHelper.Console.WriteLine("Flashlight has started!");
 			}
+			*/
 		}
 
 		private void OnGUI()
 		{
-			//foreach (Text text in mainmenu.transform.GetComponentsInChildren<Text>())
-			//	text.text = "newtext";
-			if (extrabut != null)
-				extrabut.GetComponentInChildren<Text>().text = "newtext";
-			if (setbut != null)
-				setbut.GetComponentInChildren<Text>().text = "newset";
-			if (extrabut != null && setbut != null)
-				extrabut.transform.position = setbut.transform.position;
 		}
 			
 	}
