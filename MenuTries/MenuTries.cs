@@ -62,7 +62,9 @@ namespace MenuTries
 			{
 				newins = GameObject.Instantiate(toggle, content);
 				cur = newins.GetComponent<Button>();
+				newins.GetComponent<TwoButtonToggleElement>().Initialize(false);	
 				Navigation nav = cur.navigation, nav2;
+				nav.mode = Navigation.Mode.Explicit;
 				if (i == 1)
 				{
 					cusMenu.SetSelectOnActivate(cur);
@@ -73,16 +75,18 @@ namespace MenuTries
 					nav2 = prev.navigation;
 					nav2.selectOnDown = cur;
 					nav.selectOnUp = prev;
+					prev.navigation = nav2;
 				}
 				if (i == 5)
 				{
 					nav2 = first.navigation;
 					nav.selectOnDown = first;
 					nav2.selectOnUp = cur;
+					first.navigation = nav2;
 				}
 				newins.GetComponentInChildren<Text>().text = $"mod #{i}";
 				newins.SetActive(true);
-				
+				cur.navigation = nav;
 				prev = cur;
 				//var temp = newins.transform.GetChild(1).GetChild(1);
 				//temp.GetChild(0).GetComponentInChildren<Text>().text = "Enabled";
