@@ -41,7 +41,7 @@ namespace TAICheats
 
 		public static IModConsole console;
 		public static GameObject player;
-		public static PlayerCharacterController playerchar;
+		public static PlayerSpacesuit playersuit;
 
 		private void Start()
 		{
@@ -207,13 +207,14 @@ namespace TAICheats
 					AudioSource.PlayClipAtPoint(Locator.GetAudioManager().GetAudioClipArray(global::AudioType.NomaiPowerOff)[0], Locator.GetActiveCamera().transform.position);
 			}
 
-			if (Locator.GetPlayerController() == null)
+			if (playersuit == null)
+				playersuit = Locator.GetPlayerSuit();
+			if (playersuit == null)
 				return;
-			else
-				playerchar = Locator.GetPlayerController();
-			if (!playerchar.enabled)
+			if (!playersuit.enabled)
+				playersuit = Locator.GetPlayerSuit();
+			if (playersuit == null || !playersuit.enabled)
 				return;
-
 			if (DebugInput.cheatsOn)
 			{
 				if (global::Input.GetKeyDown(DebugKeyCode.setWarpPoint))
@@ -304,30 +305,7 @@ namespace TAICheats
 						this._gotoWarpPointNextFrame = true;
 					}
 				}
-				if (global::Input.GetKey(KeyCode.E) && global::Input.GetKey(KeyCode.U))
-				{
-					GlobalMessenger.FireEvent("DebugWarpVessel");
-					this.COn = true;
-				}
-				if (global::Input.GetKeyDown(KeyCode.Delete))
-				{
-					if (this.altPressed)
-					{
-						this.COn = true;
-						FragmentIntegrity[] array2 = UnityEngine.Object.FindObjectsOfType<FragmentIntegrity>();
-						for (int j = 0; j < array2.Length; j++)
-						{
-							array2[j].AddDamage(10000f);
-						}
-					}
-					else
-					{
-						this.COn = true;
-						GlobalMessenger.FireEvent("TriggerSupernova");
-					}
-				}
-				/*
-				if (global::Input.GetKeyDown(DebugKeyCode.destroyTimeline))
+				/*if (global::Input.GetKeyDown(DebugKeyCode.destroyTimeline))
 				{
 					Debug.Log("Try DestroyTimeline (Requires NomaiExperimentBlackHole)");
 					GlobalMessenger.FireEvent("DebugTimelineDestroyed");
@@ -339,23 +317,16 @@ namespace TAICheats
 				if (global::Input.GetKeyUp(DebugKeyCode.uiTestAndSuicide))
 				{
 					Locator.GetPlayerTransform().GetComponent<PlayerResources>().SetDebugKillResources(false);
-				}
-				
-				*/
-				if (global::Input.GetKeyDown(DebugKeyCode.timeLapse))
-				{
-					Time.timeScale = 10f;
-				}
-				else if (global::Input.GetKeyUp(DebugKeyCode.timeLapse))
-				{
-					Time.timeScale = 1f;
-				}
+				}*/
 				if (global::Input.GetKeyDown(KeyCode.G))
 				{
 					if (this.altPressed)
 					{
-						PlayerData.LearnLaunchCodes();
-						this.COn = true;
+						if (PlayerData.IsLoaded())
+						{
+							PlayerData.LearnLaunchCodes();
+							this.COn = true;
+						}
 					}
 					else if (!Locator.GetPlayerSuit().IsWearingSuit(true))
 					{
@@ -654,16 +625,47 @@ namespace TAICheats
 					}
 				}
 			}
+			if (global::Input.GetKeyDown(KeyCode.Delete))
+			{
+				if (this.altPressed)
+				{
+					this.COn = true;
+					FragmentIntegrity[] array2 = UnityEngine.Object.FindObjectsOfType<FragmentIntegrity>();
+					for (int j = 0; j < array2.Length; j++)
+					{
+						array2[j].AddDamage(10000f);
+					}
+				}
+				else
+				{
+					this.COn = true;
+					GlobalMessenger.FireEvent("TriggerSupernova");
+				}
+			}
+			if (global::Input.GetKey(KeyCode.E) && global::Input.GetKey(KeyCode.U))
+			{
+				GlobalMessenger.FireEvent("DebugWarpVessel");
+				this.COn = true;
+			}
+			if (global::Input.GetKeyDown(DebugKeyCode.timeLapse))
+			{
+				Time.timeScale = 10f;
+			}
+			else if (global::Input.GetKeyUp(DebugKeyCode.timeLapse))
+			{
+				Time.timeScale = 1f;
+			}
+
 			if (this.COn)
 			{
 				AudioClip[] audioClipArray = Locator.GetAudioManager().GetAudioClipArray(global::AudioType.Menu_Confirm);
-				AudioSource.PlayClipAtPoint(audioClipArray[UnityEngine.Random.Range(0, audioClipArray.Length)], Locator.GetPlayerBody().transform.position);
+				AudioSource.PlayClipAtPoint(audioClipArray[UnityEngine.Random.Range(0, audioClipArray.Length)], Locator.GetActiveCamera().transform.position);
 				this.COn = false;
 			}
 			if (this.COff)
 			{
 				AudioClip[] audioClipArray2 = Locator.GetAudioManager().GetAudioClipArray(global::AudioType.Menu_Cancel);
-				AudioSource.PlayClipAtPoint(audioClipArray2[UnityEngine.Random.Range(0, audioClipArray2.Length)], Locator.GetPlayerBody().transform.position);
+				AudioSource.PlayClipAtPoint(audioClipArray2[UnityEngine.Random.Range(0, audioClipArray2.Length)], Locator.GetActiveCamera().transform.position);
 				this.COff = false;
 			}
 		}

@@ -6,121 +6,82 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace MenuTries
 {
-	/*class MenuPatch
-	{
-		public static void Menu_Prefix(TitleScreenManager __instance)
-		{
-			GameObject mainmenu = GameObject.Find("MainMenuLayoutGroup");
-			if (mainmenu)
-			{
-				MenuTries.console.WriteLine("Menu " + mainmenu.name);
-				MenuTries.setbut = mainmenu.transform.Find("Button-Options").gameObject;
-				if (MenuTries.setbut)
-				{
-					MenuTries.console.WriteLine("Button acquired");
-					MenuTries.setbut.GetComponentInChildren<Text>().text = "newsettings";
-					if (mainmenu.name == "MainMenuLayoutGroup")
-					{
-
-						MenuTries.extrabut = GameObject.Instantiate(MenuTries.setbut);
-						MenuTries.extrabut.transform.SetParent(mainmenu.transform, false);
-						MenuTries.extrabut.transform.position = MenuTries.setbut.transform.position;
-						MenuTries.extrabut.GetComponentInChildren<Text>().text = "newtext";
-						MenuTries.extrabut.SetActive(true);
-						mainmenu.GetComponent<VerticalLayoutGroup>().CalculateLayoutInputHorizontal();
-						mainmenu.GetComponent<VerticalLayoutGroup>().SetLayoutHorizontal();
-						MenuTries.console.WriteLine("Button added!");
-					}
-				}
-			}
-		}
-	}*/
 	public class MenuTries : ModBehaviour
 	{
 		public static IModConsole console;
-		public static GameObject extramenu, mainmenu, setbut;
+		public static GameObject extramenu, canvas, toggle, rebinder;
+		public static Transform content;
 		public static Button menubutton;
 		public static Menu cusMenu;
 
 		private void Start()
 		{
+			Application.logMessageReceived += OnLogMessageReceived;
 			console = ModHelper.Console;
-			//ModHelper.HarmonyHelper.AddPrefix<TitleScreenManager>("SetUpMenu", typeof(MenuPatch), "Menu_Prefix");
-			menubutton = ModHelper.Menus.MainMenu.AddButton("sample menu", 4);
-			menubutton.onClick.AddListener(OnEvent);
-			mainmenu = GameObject.Find("KeyboardRebindingCanvas");
-			mainmenu = mainmenu.transform.GetChild(0).gameObject;
-			extramenu = GameObject.Instantiate(mainmenu);
-			GameObject.Destroy(extramenu.transform.Find("HeaderPanel").GetComponentInChildren<LocalizedText>());
-			extramenu.transform.Find("HeaderPanel").GetComponentInChildren<Text>().text = "custom menu";
-			cusMenu = extramenu.GetComponent<Menu>();// this doesn't open :(
-			//cusMenu = mainmenu.GetComponent<Menu>(); // this opens
-			ModHelper.Console.WriteLine("MenuTry ready!");
-			
-			//mainmenu = GameObject.Find("MainMenuLayoutGroup");
-			/*GameObject setbut = GameObject.Find("Button-Options");
-			extrabut = Object.Instantiate(setbut);
-			extrabut.transform.SetParent(mainmenu.transform,false);
-			extrabut.GetComponentInChildren<Text>().text = "newtext";
-			mainmenu.GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
-			ModHelper.Console.WriteLine("New button added!");*/
 
+			menubutton = ModHelper.Menus.MainMenu.AddButton("Custom Menu", 4);
+			menubutton.onClick.AddListener(OnEvent);
+
+			ModHelper.Console.WriteLine("copying menu");
+			canvas = GameObject.Find("KeyboardRebindingCanvas");
+			extramenu = canvas.transform.GetChild(0).gameObject;
+			extramenu = GameObject.Instantiate(extramenu,canvas.transform);
+			cusMenu = extramenu.GetComponent<Menu>();
+
+			ModHelper.Console.WriteLine("setting up controls");
+			content = extramenu.transform.Find("DetailsPanel").GetChild(2).GetChild(0).GetChild(0).GetChild(0);
+			GameObject.Destroy(extramenu.transform.Find("DetailsPanel").GetChild(1).gameObject);
+			rebinder = content.GetChild(0).gameObject;
+			toggle = GameObject.Find("OptionsCanvas").transform.GetChild(0).GetChild(4).GetChild(3).GetChild(0).GetChild(0).GetChild(0).GetChild(2).gameObject;
+			toggle = Instantiate(toggle, content);
+			toggle.SetActive(false);
+
+			ModHelper.Console.WriteLine("setting up text");
+			var ltext = extramenu.GetComponentsInChildren<LocalizedText>();
+			for (int i = 0; i < ltext.Length; i++)
+				GameObject.Destroy(ltext[i]);
+			GameObject.Destroy(toggle.GetComponentInChildren<LocalizedText>());
+
+			content.GetChild(0).gameObject.SetActive(false);
+
+			extramenu.transform.Find("HeaderPanel").GetComponentInChildren<Text>().text = "Custom Menu";
+			var rtext = extramenu.transform.Find("FooterPanel").GetComponentsInChildren<Text>();
+			rtext[0].text = "Cancel and Exit";
+			rtext[1].text = "Default settings";
+			rtext[2].text = "Save and Exit";
+			rtext[3].text = "Discard changes";
+
+			GameObject newins;
+
+			for (int i = 1; i <= 5; i++)
+			{
+				newins = GameObject.Instantiate(toggle, content);
+				newins.GetComponentInChildren<Text>().text = $"mod #{i}";
+				newins.SetActive(true);
+				var temp = newins.transform.GetChild(1).GetChild(1);
+				//temp.GetChild(0).GetComponentInChildren<Text>().text = "Enabled";
+				//temp.GetChild(1).GetComponentInChildren<Text>().text = "Disabled"; //probably should rather somehow keep the LocalizedText being destroyed from those two
+			}
+
+			ModHelper.Console.WriteLine("MenuTry done!");
+		}
+
+		private void OnLogMessageReceived(string message, string stackTrace, LogType type)
+		{
+				if (stackTrace != null)
+					ModHelper.Logger.Log($"\t{type}: {message}; {stackTrace}");
+				else
+					ModHelper.Logger.Log($"\t{type}: {message}");
 		}
 		private void OnEvent()
 		{
 			ModHelper.Console.WriteLine("trying to open menu");
 			cusMenu.EnableMenu(true);
 			ModHelper.Console.WriteLine("trying to open menu (end)");
-			/*
-			GameObject cobj = behaviour.gameObject;
-			if (cobj.name == "PauseMenuItems")
-				cobj = cobj.transform.GetChild(0).gameObject;
-			if (cobj.name == "MainMenuLayoutGroup" || cobj.name == "PauseMenuItemsLayout")
-			{
-				mainmenu = cobj;
-				GameObject setbut = mainmenu.transform.Find("Button-Options").gameObject;
-				if (setbut)
-				{
-					setbut.GetComponentInChildren<Text>().text = "newtext";
-					if (extrabut)
-					{
-						extrabut.GetComponentInChildren<Text>().text = "newtext";
-						if (!extrabut.activeSelf)
-						{
-							extrabut.SetActive(true);
-							mainmenu.GetComponent<VerticalLayoutGroup>().CalculateLayoutInputVertical();
-							mainmenu.GetComponent<VerticalLayoutGroup>().SetLayoutVertical();
-						}
-					}
-					else
-					{
-						if (mainmenu)
-						{
-							extrabut = GameObject.Instantiate(setbut);
-							extrabut.transform.SetParent(mainmenu.transform, false);
-							extrabut.transform.position = setbut.transform.position;
-							extrabut.GetComponentInChildren<Text>().text = "newtext";
-							mainmenu.GetComponent<VerticalLayoutGroup>().CalculateLayoutInputHorizontal();
-							mainmenu.GetComponent<VerticalLayoutGroup>().SetLayoutHorizontal();
-							ModHelper.Console.WriteLine("New button re-added!");
-						}
-					}
-				}
-			}
-			ModHelper.Console.WriteLine("Behaviour name: " + behaviour.name);
-			if (behaviour.GetType() == typeof(Flashlight) && ev == Events.AfterStart)
-			{
-				ModHelper.Console.WriteLine("Flashlight has started!");
-			}
-			*/
-		}
-
-		private void OnGUI()
-		{
-		}
-			
+		}			
 	}
 }
