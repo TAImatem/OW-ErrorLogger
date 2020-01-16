@@ -17,6 +17,7 @@ namespace MenuTries
 		public static Transform content;
 		public static Button menubutton;
 		public static Menu cusMenu;
+		public static Selectable first=null;
 
 		private void Start()
 		{
@@ -56,17 +57,38 @@ namespace MenuTries
 			rtext[3].text = "Discard changes";
 
 			GameObject newins;
-
+			Selectable prev=null, cur;
 			for (int i = 1; i <= 5; i++)
 			{
 				newins = GameObject.Instantiate(toggle, content);
+				cur = newins.GetComponent<Button>();
+				Navigation nav = cur.navigation, nav2;
+				if (i == 1)
+				{
+					cusMenu.SetSelectOnActivate(cur);
+					first = cur;
+				}
+				else
+				{
+					nav2 = prev.navigation;
+					nav2.selectOnDown = cur;
+					nav.selectOnUp = prev;
+				}
+				if (i == 5)
+				{
+					nav2 = first.navigation;
+					nav.selectOnDown = first;
+					nav2.selectOnUp = cur;
+				}
 				newins.GetComponentInChildren<Text>().text = $"mod #{i}";
 				newins.SetActive(true);
-				var temp = newins.transform.GetChild(1).GetChild(1);
+				
+				prev = cur;
+				//var temp = newins.transform.GetChild(1).GetChild(1);
 				//temp.GetChild(0).GetComponentInChildren<Text>().text = "Enabled";
 				//temp.GetChild(1).GetComponentInChildren<Text>().text = "Disabled"; //probably should rather somehow keep the LocalizedText being destroyed from those two
 			}
-
+			extramenu.transform.GetChild(7).gameObject.SetActive(false);
 			ModHelper.Console.WriteLine("MenuTry done!");
 		}
 
@@ -81,6 +103,7 @@ namespace MenuTries
 		{
 			ModHelper.Console.WriteLine("trying to open menu");
 			cusMenu.EnableMenu(true);
+			Locator.GetMenuInputModule().SelectOnNextUpdate(first);
 			ModHelper.Console.WriteLine("trying to open menu (end)");
 		}			
 	}
