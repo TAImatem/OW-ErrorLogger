@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System;
+using System.Security.AccessControl;
 
 namespace MenuTries
 {
@@ -16,7 +17,7 @@ namespace MenuTries
 		public static GameObject extramenu, canvas, toggle, rebinder;
 		public static Transform content;
 		public static Button menubutton;
-		public static Menu cusMenu;
+		public static Menu cusMenu, somemenu;
 		public static Selectable first=null;
 
 		private void Start()
@@ -30,6 +31,7 @@ namespace MenuTries
 			ModHelper.Console.WriteLine("copying menu");
 			canvas = GameObject.Find("KeyboardRebindingCanvas");
 			extramenu = canvas.transform.GetChild(0).gameObject;
+			somemenu = extramenu.GetComponent<Menu>();
 			extramenu = GameObject.Instantiate(extramenu,canvas.transform);
 			cusMenu = extramenu.GetComponent<Menu>();
 
@@ -62,6 +64,9 @@ namespace MenuTries
 			{
 				newins = GameObject.Instantiate(toggle, content);
 				cur = newins.GetComponent<Button>();
+
+				(cur as Button).onClick.AddListener(() => ButtonClicked(somemenu, (cur as Button)));
+
 				newins.GetComponent<TwoButtonToggleElement>().Initialize(false);	
 				Navigation nav = cur.navigation, nav2;
 				nav.mode = Navigation.Mode.Explicit;
@@ -94,6 +99,17 @@ namespace MenuTries
 			}
 			extramenu.transform.GetChild(7).gameObject.SetActive(false);
 			ModHelper.Console.WriteLine("MenuTry done!");
+		}
+
+		private void ButtonClicked(Menu toopen, Button clicked)
+		{
+			FieldInfo sel = typeof(UIStyleApplier).GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
+			ModHelper.Console.WriteLine($"{clicked.name} {(UIElementState)sel.GetValue(clicked.GetComponent<UIStyleApplier>())}");
+			if ((UIElementState)sel.GetValue(clicked.gameObject.GetComponent<UIStyleApplier>())  == UIElementState.HIGHLIGHTED)
+			{
+				ModHelper.Console.WriteLine("opening menu");
+				//toopen.EnableMenu(true);
+			}
 		}
 
 		private void OnLogMessageReceived(string message, string stackTrace, LogType type)
