@@ -33,7 +33,7 @@ namespace MenuTries
 	public class MenuTries : ModBehaviour
 	{
 		public static IModConsole console;
-		public static GameObject extramenu, canvas, toggle, rebinder;
+		public static GameObject extramenu, canvas, toggleTemplate, rebinderTemplate;
 		public static Transform content;
 		public static Button menubutton;
 		public static Menu cusMenu, somemenu;
@@ -58,16 +58,16 @@ namespace MenuTries
 			ModHelper.Console.WriteLine("setting up controls");
 			content = extramenu.transform.Find("DetailsPanel").GetChild(2).GetChild(0).GetChild(0).GetChild(0);
 			GameObject.Destroy(extramenu.transform.Find("DetailsPanel").GetChild(1).gameObject);
-			rebinder = content.GetChild(0).gameObject;
-			toggle = GameObject.Find("OptionsCanvas").transform.GetChild(0).GetChild(4).GetChild(3).GetChild(0).GetChild(0).GetChild(0).GetChild(2).gameObject;
-			toggle = Instantiate(toggle, content);
-			toggle.SetActive(false);
+			rebinderTemplate = content.GetChild(0).gameObject;
+			toggleTemplate = GameObject.Find("OptionsCanvas").transform.GetChild(0).GetChild(4).GetChild(3).GetChild(0).GetChild(0).GetChild(0).GetChild(2).gameObject;
+			toggleTemplate = Instantiate(toggleTemplate, content);
+			toggleTemplate.SetActive(false);
 
 			ModHelper.Console.WriteLine("setting up text");
 			var ltext = extramenu.GetComponentsInChildren<LocalizedText>();
 			for (int i = 0; i < ltext.Length; i++)
 				GameObject.Destroy(ltext[i]);
-			GameObject.Destroy(toggle.GetComponentInChildren<LocalizedText>());
+			GameObject.Destroy(toggleTemplate.GetComponentInChildren<LocalizedText>());
 
 			content.GetChild(0).gameObject.SetActive(false);
 
@@ -107,9 +107,9 @@ namespace MenuTries
 			Navigation nav, nav2;
 			for (int i = 0; i < size; i++)
 			{
-				newins = GameObject.Instantiate(toggle, content);
+				newins = GameObject.Instantiate(toggleTemplate, content);
 				cur = newins.GetComponent<Button>();
-				//create mod's own menu here
+				//create or get mod's own menu here
 				(newins.AddComponent<MenuOpener>() as MenuOpener).Initialize(somemenu, cur as Button); //replace somemenu with actuall mod's menu
 
 				dict.Add(newins, mods[i]);
