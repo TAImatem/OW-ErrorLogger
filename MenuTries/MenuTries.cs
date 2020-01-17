@@ -8,9 +8,28 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System;
 using System.Security.AccessControl;
+using System.Collections.Generic;
 
 namespace MenuTries
 {
+	public class MenuOpener : MonoBehaviour
+	{
+		private Menu menu;
+		private Button button = null;
+		public void Initialize (Menu toOpen, Button toListen)
+		{
+			if (button!= null)
+				button.onClick.RemoveListener(OnEvent);
+			menu = toOpen;
+			button = toListen;
+			button.onClick.AddListener(OnEvent);
+		}
+		private void OnEvent()
+		{
+			menu.EnableMenu(true);
+		}
+	}
+
 	public class MenuTries : ModBehaviour
 	{
 		public static IModConsole console;
@@ -19,14 +38,15 @@ namespace MenuTries
 		public static Button menubutton;
 		public static Menu cusMenu, somemenu;
 		public static Selectable first=null;
+		private static Dictionary<GameObject, ModBehaviour> dict = new Dictionary<GameObject, ModBehaviour>();
 
 		private void Start()
 		{
 			Application.logMessageReceived += OnLogMessageReceived;
 			console = ModHelper.Console;
 
-			menubutton = ModHelper.Menus.MainMenu.AddButton("Custom Menu", 4);
-			menubutton.onClick.AddListener(OnEvent);
+			menubutton = ModHelper.Menus.MainMenu.AddButton("Custom Menu", 4); //button setup, as well as parenting should be moved to a listener, so it will re-setup after level change
+			menubutton.onClick.AddListener(OpenMenu);
 
 			ModHelper.Console.WriteLine("copying menu");
 			canvas = GameObject.Find("KeyboardRebindingCanvas");
@@ -52,25 +72,52 @@ namespace MenuTries
 			content.GetChild(0).gameObject.SetActive(false);
 
 			extramenu.transform.Find("HeaderPanel").GetComponentInChildren<Text>().text = "Custom Menu";
-			var rtext = extramenu.transform.Find("FooterPanel").GetComponentsInChildren<Text>();
+
+			var footer = extramenu.transform.Find("FooterPanel");
+			var rtext = footer.GetComponentsInChildren<Text>();
 			rtext[0].text = "Cancel and Exit";
 			rtext[1].text = "Default settings";
 			rtext[2].text = "Save and Exit";
 			rtext[3].text = "Discard changes";
 
+			footer.GetChild(1).GetComponent<Button>().onClick.AddListener(SetDefault);
+			footer.GetChild(2).GetComponent<Button>().onClick.AddListener(SaveSettings);
+			footer.GetChild(3).GetComponent<Button>().onClick.AddListener(Discard);
+			extramenu.transform.GetChild(7).gameObject.SetActive(false);
+			ModHelper.Console.WriteLine("MenuTry done!");
+		}
+
+		private void OpenMenu()
+		{
+			if (dict.Count == 0)
+				InitializeMenu();
+			cusMenu.EnableMenu(true);
+			Locator.GetMenuInputModule().SelectOnNextUpdate(first);
+		}
+		private void InitializeMenu()
+		{
+			//InitializeMenu(GetModsList());
+		}
+
+		public void InitializeMenu(ModBehaviour[] mods)//maybe not ModBehaviours, since those will probably be null if disabled
+		{
+			int size = mods.Length;
 			GameObject newins;
-			Selectable prev=null, cur;
-			for (int i = 1; i <= 5; i++)
+			Selectable prev = null, cur;
+			Navigation nav, nav2;
+			for (int i = 0; i < size; i++)
 			{
 				newins = GameObject.Instantiate(toggle, content);
 				cur = newins.GetComponent<Button>();
+				//create mod's own menu here
+				(newins.AddComponent<MenuOpener>() as MenuOpener).Initialize(somemenu, cur as Button); //replace somemenu with actuall mod's menu
 
-				(cur as Button).onClick.AddListener(() => ButtonClicked(somemenu, (cur as Button)));
+				dict.Add(newins, mods[i]);
 
-				newins.GetComponent<TwoButtonToggleElement>().Initialize(false);	
-				Navigation nav = cur.navigation, nav2;
+				newins.GetComponent<TwoButtonToggleElement>().Initialize(mods[i].isActiveAndEnabled);
+				nav = cur.navigation;
 				nav.mode = Navigation.Mode.Explicit;
-				if (i == 1)
+				if (i == 0)
 				{
 					cusMenu.SetSelectOnActivate(cur);
 					first = cur;
@@ -82,7 +129,7 @@ namespace MenuTries
 					nav.selectOnUp = prev;
 					prev.navigation = nav2;
 				}
-				if (i == 5)
+				if (i == size)
 				{
 					nav2 = first.navigation;
 					nav.selectOnDown = first;
@@ -93,24 +140,47 @@ namespace MenuTries
 				newins.SetActive(true);
 				cur.navigation = nav;
 				prev = cur;
-				//var temp = newins.transform.GetChild(1).GetChild(1);
-				//temp.GetChild(0).GetComponentInChildren<Text>().text = "Enabled";
-				//temp.GetChild(1).GetComponentInChildren<Text>().text = "Disabled"; //probably should rather somehow keep the LocalizedText being destroyed from those two
 			}
-			extramenu.transform.GetChild(7).gameObject.SetActive(false);
-			ModHelper.Console.WriteLine("MenuTry done!");
 		}
 
-		private void ButtonClicked(Menu toopen, Button clicked)
+		private void Discard()
 		{
-			FieldInfo sel = typeof(UIStyleApplier).GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
-			ModHelper.Console.WriteLine($"{clicked.name} {(UIElementState)sel.GetValue(clicked.GetComponent<UIStyleApplier>())}");
-			if ((UIElementState)sel.GetValue(clicked.gameObject.GetComponent<UIStyleApplier>())  == UIElementState.HIGHLIGHTED)
+			foreach (var key in dict.Keys)
 			{
-				ModHelper.Console.WriteLine("opening menu");
-				//toopen.EnableMenu(true);
+				key.GetComponent<TwoButtonToggleElement>().Initialize(dict[key].isActiveAndEnabled);
 			}
 		}
+
+		private void SetDefault()
+		{
+			foreach (var key in dict.Keys)
+			{
+				//key.GetComponent<TwoButtonToggleElement>().Initialize(dict[key].defaultConfig.GetValue("enabled"));
+			}
+			SaveSettings();
+		}
+
+		private void SaveSettings()
+		{
+			foreach (var key in dict.Keys)
+			{
+				bool newval = key.GetComponent<TwoButtonToggleElement>().GetValue();
+				bool oldval = dict[key].isActiveAndEnabled;
+				if (oldval^newval)
+				{
+					if (newval)
+					{
+						//dict[key].Initialize or whatever
+					}
+					else
+					{
+						//dict[key].UnPatchAll();
+						GameObject.Destroy(dict[key]); // or maybe disable but make awake and start rerun itself
+					}
+				}
+			}
+		}
+
 
 		private void OnLogMessageReceived(string message, string stackTrace, LogType type)
 		{
@@ -118,13 +188,6 @@ namespace MenuTries
 					ModHelper.Logger.Log($"\t{type}: {message}; {stackTrace}");
 				else
 					ModHelper.Logger.Log($"\t{type}: {message}");
-		}
-		private void OnEvent()
-		{
-			ModHelper.Console.WriteLine("trying to open menu");
-			cusMenu.EnableMenu(true);
-			Locator.GetMenuInputModule().SelectOnNextUpdate(first);
-			ModHelper.Console.WriteLine("trying to open menu (end)");
-		}			
+		}		
 	}
 }
