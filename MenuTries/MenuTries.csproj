@@ -68,6 +68,9 @@
     <Reference Include="OWML.ModHelper.Menus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OWML.0.3.27\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
     </Reference>
+    <Reference Include="OWML.ModLoader">
+      <HintPath>D:\Games\Outer Wilds\OuterWilds_Data\Managed\OWML.ModLoader.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>

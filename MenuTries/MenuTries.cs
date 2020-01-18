@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Events;
+using OWML.ModLoader;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,13 +33,18 @@ namespace MenuTries
 
 	public class MenuTries : ModBehaviour
 	{
+		//interaction:
+		//toggle (TwoButtonToggleElement) takes initial bool for initialization, then use GetValue to read it
+		//selector (OptionsSelectorElement) takes initial index and string[] for initialization, then use GetCurrentIndex to read it
+		//ordinary (SliderElement) slider operates on floats (0f-10f), takes initial value for initialization, then use GetValue to read the float
+		//rebinder (KeyRebindingElement) TBD, should look into both KeyRebinderManager and 
 		public static IModConsole console;
-		public static GameObject extramenu, canvas, toggleTemplate, rebinderTemplate;
+		public static GameObject extramenu, canvas, toggleTemplate, rebinderTemplate, selectorTemplate, sliderTemplate;
 		public static Transform content;
 		public static Button menubutton;
 		public static Menu cusMenu, somemenu;
 		public static Selectable first=null;
-		private static Dictionary<GameObject, ModBehaviour> dict = new Dictionary<GameObject, ModBehaviour>();
+		private static Dictionary<GameObject, ModData> dict = new Dictionary<GameObject, ModData>();
 
 		private void Start()
 		{
@@ -54,14 +60,20 @@ namespace MenuTries
 			somemenu = extramenu.GetComponent<Menu>();
 			extramenu = GameObject.Instantiate(extramenu,canvas.transform);
 			cusMenu = extramenu.GetComponent<Menu>();
+			DontDestroyOnLoad(extramenu);
 
 			ModHelper.Console.WriteLine("setting up controls");
 			content = extramenu.transform.Find("DetailsPanel").GetChild(2).GetChild(0).GetChild(0).GetChild(0);
 			GameObject.Destroy(extramenu.transform.Find("DetailsPanel").GetChild(1).gameObject);
+
 			rebinderTemplate = content.GetChild(0).gameObject;
 			toggleTemplate = GameObject.Find("OptionsCanvas").transform.GetChild(0).GetChild(4).GetChild(3).GetChild(0).GetChild(0).GetChild(0).GetChild(2).gameObject;
 			toggleTemplate = Instantiate(toggleTemplate, content);
 			toggleTemplate.SetActive(false);
+			selectorTemplate = GameObject.Find("OptionsCanvas").transform.GetChild(0).GetChild(4).GetChild(6).Find("UIElement-MonitorSelect").gameObject;
+			selectorTemplate = Instantiate(selectorTemplate, content);
+			sliderTemplate = GameObject.Find("OptionsCanvas").transform.GetChild(0).GetChild(4).GetChild(6).Find("UIElement-FOV").gameObject;
+			sliderTemplate = Instantiate(sliderTemplate, content);
 
 			ModHelper.Console.WriteLine("setting up text");
 			var ltext = extramenu.GetComponentsInChildren<LocalizedText>();
@@ -70,6 +82,7 @@ namespace MenuTries
 			GameObject.Destroy(toggleTemplate.GetComponentInChildren<LocalizedText>());
 
 			content.GetChild(0).gameObject.SetActive(false);
+			selectorTemplate.SetActive(false);
 
 			extramenu.transform.Find("HeaderPanel").GetComponentInChildren<Text>().text = "Custom Menu";
 
@@ -99,7 +112,7 @@ namespace MenuTries
 			//InitializeMenu(GetModsList());
 		}
 
-		public void InitializeMenu(ModBehaviour[] mods)//maybe not ModBehaviours, since those will probably be null if disabled
+		public void InitializeMenu(ModData[] mods)
 		{
 			int size = mods.Length;
 			GameObject newins;
@@ -114,7 +127,7 @@ namespace MenuTries
 
 				dict.Add(newins, mods[i]);
 
-				newins.GetComponent<TwoButtonToggleElement>().Initialize(mods[i].isActiveAndEnabled);
+				newins.GetComponent<TwoButtonToggleElement>().Initialize(mods[i].Config.Enabled);
 				nav = cur.navigation;
 				nav.mode = Navigation.Mode.Explicit;
 				if (i == 0)
@@ -147,7 +160,7 @@ namespace MenuTries
 		{
 			foreach (var key in dict.Keys)
 			{
-				key.GetComponent<TwoButtonToggleElement>().Initialize(dict[key].isActiveAndEnabled);
+				key.GetComponent<TwoButtonToggleElement>().Initialize(dict[key].Config.Enabled);
 			}
 		}
 
@@ -155,9 +168,8 @@ namespace MenuTries
 		{
 			foreach (var key in dict.Keys)
 			{
-				//key.GetComponent<TwoButtonToggleElement>().Initialize(dict[key].defaultConfig.GetValue("enabled"));
+				//key.GetComponent<TwoButtonToggleElement>().Initialize(dict[key].defaultConfig.Enabled);
 			}
-			SaveSettings();
 		}
 
 		private void SaveSettings()
@@ -165,17 +177,18 @@ namespace MenuTries
 			foreach (var key in dict.Keys)
 			{
 				bool newval = key.GetComponent<TwoButtonToggleElement>().GetValue();
-				bool oldval = dict[key].isActiveAndEnabled;
+				bool oldval = dict[key].Config.Enabled;
 				if (oldval^newval)
 				{
+					(dict[key].Config as ModConfig).Enabled = newval; //Also, write it to json obv
 					if (newval)
 					{
-						//dict[key].Initialize or whatever
+						//dict[key].Instantiate() or maybe Owo.LoadMod(dict[key]), but with creating modhelper and initialization
 					}
 					else
 					{
-						//dict[key].UnPatchAll();
-						GameObject.Destroy(dict[key]); // or maybe disable but make awake and start rerun itself
+						//dict[key].Instance.ModHelper.HarmonyHelper.UnPatchAll();
+						//GameObject.Destroy(dict[key].Instance.gameObject); // or maybe disable but make awake and start rerun itself if enabled for second time
 					}
 				}
 			}
