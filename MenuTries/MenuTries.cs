@@ -109,7 +109,9 @@ namespace MenuTries
 		}
 		private void InitializeMenu()
 		{
-			//InitializeMenu(GetModsList());
+			ModFinder finder = new ModFinder(new OwmlConfig(),ModHelper.Console); //replace with getting an actual ModFinder
+			var array = (finder.GetMods() as List<ModData>).ToArray(); //I hope IList<IModData> actually can be cast to List<ModData>
+			InitializeMenu(array);
 		}
 
 		public void InitializeMenu(ModData[] mods)
