@@ -1,9 +1,0 @@
-{
-	"filename": "ControllerFix.dll",
-	"author": "TAImatem",
-	"name": "XBoxControllerFix",
-	"uniqueName": "TruAI.XBoxControllerFix",
-	"version": "0.9",
-	"owmlVersion": "0.3.8",
-	"enabled": true
-}
