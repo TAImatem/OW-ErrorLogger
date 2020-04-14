@@ -7,8 +7,8 @@
     <ProjectGuid>{C745ACFB-0081-4CF6-BB4E-C2B1DE59DF19}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MenuTries</RootNamespace>
-    <AssemblyName>MenuTries</AssemblyName>
+    <RootNamespace>OW_ErrorLogger</RootNamespace>
+    <AssemblyName>OW_ErrorLogger</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

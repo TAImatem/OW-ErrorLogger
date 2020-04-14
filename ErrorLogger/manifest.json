@@ -1,9 +1,9 @@
 {
-	"filename": "MenuTries.dll",
+	"filename": "OW_ErrorLogger.dll",
 	"author": "TAImatem",
-	"name": "MenuTries",
-	"uniqueName": "TruAI.MenuTries",
+	"name": "ErrorLogger",
+	"uniqueName": "TruAI.ErrorLogger",
 	"version": "1.0",
-	"owmlVersion": "0.3.8",
+	"owmlVersion": "0.3.44",
 	"enabled": true
 }
